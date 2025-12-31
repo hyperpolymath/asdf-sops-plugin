@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+set -euo pipefail
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${PLUGIN_DIR}/lib/utils.bash"
+
+download_sops() {
+  local version="${ASDF_INSTALL_VERSION:-}" download_path="${ASDF_DOWNLOAD_PATH:-}"
+  [[ -z "${version}" ]] && fail "ASDF_INSTALL_VERSION required"
+  [[ -z "${download_path}" ]] && fail "ASDF_DOWNLOAD_PATH required"
+  [[ "${ASDF_INSTALL_TYPE:-version}" != "version" ]] && fail "Only version installs supported"
+
+  log_info "Downloading sops ${version}..."
+  mkdir -p "${download_path}"
+
+  local download_url binary_file checksum_url checksum_file
+  download_url="$(get_download_url "${version}")"
+  binary_file="${download_path}/sops"
+  checksum_url="$(get_checksum_url "${version}")"
+  checksum_file="${download_path}/checksums.txt"
+
+  download_file "${download_url}" "${binary_file}" || fail "Download failed"
+
+  if [[ "${ASDF_SOPS_SKIP_VERIFY:-false}" != "true" ]]; then
+    if download_file "${checksum_url}" "${checksum_file}" 2>/dev/null; then
+      verify_checksum "${binary_file}" "${checksum_file}"
+    else
+      log_warn "Checksum not available"
+    fi
+  fi
+
+  chmod +x "${binary_file}"
+  rm -f "${checksum_file}"
+  log_success "Download complete"
+}
+
+check_dependencies
+download_sops

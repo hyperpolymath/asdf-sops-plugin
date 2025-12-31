@@ -1,0 +1,26 @@
+= asdf-sops
+
+image:https://img.shields.io/badge/license-AGPL--3.0-blue.svg[AGPL-3.0]
+:url-asdf: https://asdf-vm.com
+
+An {url-asdf}[asdf] plugin for https://github.com/getsops/sops[SOPS] - Secrets OPerationS.
+
+== Installation
+
+[source,bash]
+----
+asdf plugin add sops https://github.com/hyperpolymath/asdf-sops-plugin.git
+----
+
+== Usage
+
+[source,bash]
+----
+asdf list all sops
+asdf install sops latest
+asdf global sops latest
+----
+
+== License
+
+SPDX-License-Identifier: AGPL-3.0-or-later

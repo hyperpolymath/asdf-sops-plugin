@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+set -euo pipefail
+PLUGIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "${PLUGIN_DIR}/lib/utils.bash"
+
+install_sops() {
+  local version="${ASDF_INSTALL_VERSION:-}" install_path="${ASDF_INSTALL_PATH:-}"
+  local download_path="${ASDF_DOWNLOAD_PATH:-}"
+  [[ -z "${version}" ]] && fail "ASDF_INSTALL_VERSION required"
+  [[ -z "${install_path}" ]] && fail "ASDF_INSTALL_PATH required"
+
+  log_info "Installing sops ${version}..."
+
+  if [[ -z "${download_path}" ]] || [[ ! -d "${download_path}" ]]; then
+    download_path="${install_path}/tmp"
+    mkdir -p "${download_path}"
+    local url; url="$(get_download_url "${version}")"
+    download_file "${url}" "${download_path}/sops" || fail "Download failed"
+  fi
+
+  mkdir -p "${install_path}/bin"
+  cp "${download_path}/sops" "${install_path}/bin/sops"
+  chmod +x "${install_path}/bin/sops"
+
+  [[ -d "${install_path}/tmp" ]] && rm -rf "${install_path}/tmp"
+
+  log_success "sops ${version} installed"
+  "${install_path}/bin/sops" --version 2>&1 | head -1 || true
+}
+
+check_dependencies
+install_sops
