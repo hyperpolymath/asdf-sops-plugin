@@ -1,6 +1,6 @@
 = asdf-sops
 
-image:https://img.shields.io/badge/license-AGPL--3.0-blue.svg[AGPL-3.0]
+image:https://img.shields.io/badge/license-AGPL--3.0-blue.svg[PMPL-1.0]
 :url-asdf: https://asdf-vm.com
 
 An {url-asdf}[asdf] plugin for https://github.com/getsops/sops[SOPS] - Secrets OPerationS.
@@ -23,4 +23,4 @@ asdf global sops latest
 
 == License
 
-SPDX-License-Identifier: AGPL-3.0-or-later
+SPDX-License-Identifier: PMPL-1.0-or-later
